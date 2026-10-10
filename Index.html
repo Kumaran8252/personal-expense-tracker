@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Expense Tracker</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #eef2f7;
+    padding: 15px;
+}
+.container {
+    max-width: 450px;
+    margin: auto;
+}
+h1 {
+    text-align: center;
+    color: #123456;
+}
+.card {
+    background: white;
+    padding: 18px;
+    margin: 12px 0;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px #ccc;
+}
+.balance {
+    background: #176b4d;
+    color: white;
+    text-align: center;
+}
+input, select, button {
+    width: 100%;
+    padding: 13px;
+    margin: 7px 0;
+    box-sizing: border-box;
+    border-radius: 7px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+button {
+    background: #176b4d;
+    color: white;
+    border: none;
+}
+.delete {
+    background: #dc3545;
+    width: auto;
+    padding: 8px;
+}
+.item {
+    background: #f7f7f7;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 8px;
+    overflow-wrap: anywhere;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>💰 Expense Tracker</h1>
+
+<div class="card balance">
+<h3>Available Balance</h3>
+<h2 id="balance">₹0</h2>
+</div>
+
+<div class="card">
+<h3>Total Income: <span id="income">₹0</span></h3>
+<h3>Total Expenses: <span id="expense">₹0</span></h3>
+</div>
+
+<div class="card">
+<h3>Add Transaction</h3>
+
+<input id="title" placeholder="Enter name">
+
+<input id="amount" type="number"
+placeholder="Enter amount" min="0.01" step="0.01">
+
+<select id="type">
+<option value="income">Income</option>
+<option value="expense">Expense</option>
+</select>
+
+<button onclick="add()">Add Transaction</button>
+</div>
+
+<div class="card">
+<h3>Transaction History</h3>
+<div id="list"></div>
+</div>
+
+</div>
+
+<script>
+let data = [];
+
+try {
+    data = JSON.parse(
+        localStorage.getItem("expenseData")
+    ) || [];
+} catch (e) {
+    data = [];
+}
+
+function save() {
+    localStorage.setItem("expenseData", JSON.stringify(data));
+}
+
+function money(n) {
+    return "₹" + n.toLocaleString("en-IN");
+}
+
+function add() {
+    let title = document.getElementById("title").value.trim();
+    let amount = Number(document.getElementById("amount").value);
+    let type = document.getElementById("type").value;
+
+    if (title === "" || !Number.isFinite(amount) || amount <= 0) {
+        alert("Enter valid name and amount!");
+        return;
+    }
+
+    data.push({
+        id: Date.now().toString() + Math.random(),
+        title: title,
+        amount: amount,
+        type: type
+    });
+
+    save();
+    render();
+
+    document.getElementById("title").value = "";
+    document.getElementById("amount").value = "";
+}
+
+function removeItem(id) {
+    data = data.filter(x => x.id !== id);
+    save();
+    render();
+}
+
+function render() {
+    let income = 0;
+    let expense = 0;
+    let list = document.getElementById("list");
+
+    list.replaceChildren();
+
+    data.forEach(function(x) {
+        if (x.type === "income") {
+            income += x.amount;
+        } else {
+            expense += x.amount;
+        }
+
+        let item = document.createElement("div");
+        item.className = "item";
+
+        let name = document.createElement("b");
+        name.textContent = x.title;
+
+        let amount = document.createElement("p");
+        amount.textContent =
+            (x.type === "income" ? "+" : "-") + money(x.amount);
+
+        let del = document.createElement("button");
+        del.className = "delete";
+        del.textContent = "Delete";
+        del.onclick = function() {
+            removeItem(x.id);
+        };
+
+        item.append(name, amount, del);
+        list.appendChild(item);
+    });
+
+    document.getElementById("income").textContent = money(income);
+    document.getElementById("expense").textContent = money(expense);
+    document.getElementById("balance").textContent = money(income - expense);
+}
+
+render();
+</script>
+
+</body>
+</html>
