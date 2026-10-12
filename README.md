@@ -5,7 +5,7 @@ Personal Expense Tracker
 
 A responsive web application for managing daily income and expenses using HTML, CSS, and JavaScript.
 
-Features
+FEATURES
 
 Add and track daily expenses
 
@@ -20,7 +20,7 @@ Responsive design for mobile and desktop
 Manage personal finances easily
 
 
-Technologies Used
+TECHNOLOGIES USED
 
 HTML — webpage structure
 
@@ -29,7 +29,7 @@ CSS — styling and responsive design
 JavaScript — expense calculations and functionality
 
 
-How to Run
+HOW TO RUN
 
 1. Download or clone the project.
 
@@ -44,6 +44,6 @@ How to Run
 
 
 
-Purpose
+PURPOSE
 
 This project helps users track their daily spending, manage their budget, and understand their spending habits.
